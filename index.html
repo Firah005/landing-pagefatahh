@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Much. Fatahillah | Interactive Experience</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+      :root {
+        --bg: #05070a;
+        --card: rgba(255, 255, 255, 0.03);
+        --accent: #00d2ff;
+        --accent-2: #9d50bb;
+        --text: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        outline: none;
+      }
+
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* --- BACKGROUND & CANVAS --- */
+      #canvas-particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      /* Orb Cahaya di Background */
+      .bg-orb {
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(157, 80, 187, 0.15), transparent 70%);
+        top: -100px;
+        right: -100px;
+        z-index: -1;
+        filter: blur(80px);
+      }
+
+      /* --- NAVIGASI --- */
+      nav {
+        position: fixed;
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        padding: 12px 35px;
+        border-radius: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      nav a {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: 0.3s;
+      }
+
+      nav a:hover {
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent);
+      }
+
+      /* --- ANIMASI RIPPLE --- */
+      .ripple {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        border-radius: 50%;
+        animation: ripple-animation 0.6s linear;
+      }
+      @keyframes ripple-animation {
+        from {
+          width: 0;
+          height: 0;
+          opacity: 0.5;
+        }
+        to {
+          width: 600px;
+          height: 600px;
+          opacity: 0;
+        }
+      }
+
+      /* --- HERO SECTION --- */
+      .hero {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(3rem, 10vw, 6rem);
+        line-height: 0.9;
+        margin-bottom: 25px;
+      }
+
+      .hero h1 span {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* --- MAIN CONTENT GRID --- */
+      .main-content {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        padding: 40px 20px 100px;
+      }
+
+      /* Reveal Animation Class */
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease-out;
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .glass-card {
+        background: var(--card);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 45px;
+        border-radius: 35px;
+        position: relative;
+        overflow: hidden;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .glass-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .full {
+        grid-column: span 2;
+      }
+
+      h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.8rem;
+        color: var(--accent);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      /* --- SKILL TAGS STYLING --- */
+      .skills-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .skill-tag {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 20px;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .skill-tag:hover {
+        background: var(--accent);
+        color: var(--bg);
+        transform: scale(1.1);
+      }
+
+      /* --- BUTTONS --- */
+      .btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 15px 40px;
+        background: linear-gradient(45deg, var(--accent), var(--accent-2));
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: 0.3s;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+      }
+
+      .btn:hover {
+        transform: scale(1.05) translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+        .full {
+          grid-column: span 1;
+        }
+        .hero h1 {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas-particles"></canvas>
+    <div class="bg-orb"></div>
+
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#skill-section">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="#marketplace">Marketplace</a>
+    </nav>
+
+    <section class="hero" id="home">
+      <p style="letter-spacing: 8px; opacity: 0.4; margin-bottom: 15px">V046241026</p>
+      <h1>Much.<br /><span>Fatahillah</span></h1>
+      <p style="color: var(--accent); font-weight: 600; letter-spacing: 3px; margin-bottom: 35px; text-transform: uppercase">Agribisnis Peternakan</p>
+      <a href="#skill-section" class="btn">Explore Skills</a>
+    </section>
+
+    <div class="main-content">
+      <div class="glass-card full reveal" id="about">
+        <h2><i class="fas fa-user-astronaut"></i> Tentang Saya</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8; opacity: 0.9">
+          "Membawa masa depan ke dunia peternakan dengan menggabungkan prinsip agribisnis dan kecanggihan teknologi digital. Saya memiliki misi untuk mengoptimalkan potensi peternakan melalui strategi kreatif yang meningkatkan efektivitas
+          operasional serta mendukung keberlanjutan industri di era modern."
+        </p>
+      </div>
+
+      <div class="glass-card reveal">
+        <h2><i class="fas fa-id-card"></i> Data Pribadi</h2>
+        <p style="line-height: 2">
+          <span style="color: var(--accent)">📍</span> Kabupaten Soppeng<br />
+          <span style="color: var(--accent)">🎂</span> 01 April 2005<br />
+          <span style="color: var(--accent)">🎓</span> Vokasi Unhas
+        </p>
+      </div>
+
+      <div class="glass-card reveal">
+        <h2><i class="fas fa-heart"></i> Hobi</h2>
+        <p style="line-height: 2">
+          🎣 Memancing <br />
+          🐄 Beternak <br />
+          🏸 Bulutangkis
+        </p>
+      </div>
+
+      <div class="glass-card full reveal" id="skill-section">
+        <h2 style="color: var(--accent-2)"><i class="fas fa-bolt"></i> Keahlian & Kompetensi</h2>
+        <div class="skills-wrapper">
+          <div class="skill-tag"><i class="fas fa-utensils"></i> Cooking</div>
+          <div class="skill-tag"><i class="fas fa-hand-fist"></i> Boxing</div>
+          <div class="skill-tag"><i class="fas fa-cow"></i> Livestock Management</div>
+          <div class="skill-tag"><i class="fas fa-seedling"></i> Agribusiness</div>
+        </div>
+        <p style="margin-top: 30px; font-style: italic; opacity: 0.6; border-left: 3px solid var(--accent-2); padding-left: 15px">"Berfokus pada efisiensi dan keberlanjutan hasil peternakan rakyat."</p>
+      </div>
+
+      <div class="glass-card full reveal" id="contact" style="text-align: center">
+        <h2><i class="fas fa-envelope"></i> Mari Terhubung</h2>
+        <p style="opacity: 0.7; margin-bottom: 10px">Siapkan kolaborasi hebat di bidang peternakan digital.</p>
+        <a href="https://wa.me/6281234567890" class="btn">Kirim Pesan WhatsApp</a>
+      </div>
+    </div>
+
+    <script>
+      // --- ANIMASI PARTIKEL ---
+      const canvas = document.getElementById('canvas-particles');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2;
+          this.speedX = Math.random() * 0.4 - 0.2;
+          this.speedY = Math.random() * 0.4 - 0.2;
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x > canvas.width) this.x = 0;
+          if (this.x < 0) this.x = canvas.width;
+          if (this.y > canvas.height) this.y = 0;
+          if (this.y < 0) this.y = canvas.height;
+        }
+        draw() {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      for (let i = 0; i < 80; i++) particles.push(new Particle());
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // --- SCROLL REVEAL ---
+      function reveal() {
+        var reveals = document.querySelectorAll('.reveal');
+        for (var i = 0; i < reveals.length; i++) {
+          var windowHeight = window.innerHeight;
+          var elementTop = reveals[i].getBoundingClientRect().top;
+          var elementVisible = 150;
+          if (elementTop < windowHeight - elementVisible) {
+            reveals[i].classList.add('active');
+          }
+        }
+      }
+      window.addEventListener('scroll', reveal);
+
+      // --- RIPPLE EFFECT ---
+      document.addEventListener('click', function (e) {
+        const target = e.target.closest('.glass-card, .btn');
+        if (!target) return;
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        target.appendChild(ripple);
+        const rect = target.getBoundingClientRect();
+        ripple.style.left = `${e.clientX - rect.left}px`;
+        ripple.style.top = `${e.clientY - rect.top}px`;
+        setTimeout(() => ripple.remove(), 600);
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const marketplaceLink = document.querySelector('a[href="#marketplace"]');
+        if (marketplaceLink) {
+          marketplaceLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            // GANTI LINK DI BAWAH INI DENGAN LINK TOKO KAMU
+            const urlMarketplace = 'https://marketplace-lemon-ten.vercel.app/';
+            window.open(urlMarketplace, '_blank');
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
